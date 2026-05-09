@@ -121,18 +121,18 @@
         container.innerHTML += `
           <div class="bg-white border border-slate-100 rounded-xl py-2 px-3 shadow-sm flex items-center justify-between gap-2">
             <div class="flex justify-between items-start mb-4">
-             <div class="w-[10%] flex flex-col items-center justify-center border-r border-slate-100 pr-2">
+             <div class="w-[20%] flex flex-col items-center justify-center border-r border-slate-100 pr-2">
         <span class="text-sm font-black text-slate-700">${item.dia || '--'}</span>
               </div>
               <div class="w-[50%] font-semibold text-slate-800 truncate text-left">
       ${item.nome}
               </div>
-              <div class="w-[30%] font-extrabold text-blue-600 whitespace-nowrap text-center">
+              <div class="w-[25%] font-extrabold text-blue-600 whitespace-nowrap text-center">
       R$ ${item.valor.toFixed(2)}
                </div>
             </div>
             <!-- BOTOES ALINHADOS À ESQUERDA -->
-            <div class="w-[20%] flex justify-end gap-1">
+            <div class="w-[15%] flex justify-end gap-1">
               <button onclick="editarValor(${item.id})" class="p-2 hover:bg-slate-100 rounded-full transition" title="Editar"> ✏️
                </button>
               <button onclick="excluirItem(${item.id})" class="p-2 hover:bg-red-50 rounded-full transition" title="Excluir"> 🗑️
