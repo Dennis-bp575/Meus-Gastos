@@ -156,6 +156,7 @@
         id: Date.now(),
         nome: nome || "Gasto sem nome",
         valor: valor,
+        dia: new Date().getDate(), // <--- Adiciona o dia atual (ex: 9)
         mesRef: getMesReferencia(abaAtual)
       });
       renderizar();
