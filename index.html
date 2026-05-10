@@ -122,7 +122,7 @@
           <div class="bg-white border border-slate-100 rounded-xl py-2 px-3 shadow-sm flex items-center justify-between gap-2">
             <div class="flex justify-between items-start mb-4">
              <div class="w-[20%] flex flex-col items-center justify-center border-r border-slate-100 pr-2">
-        <span class="text-sm font-black text-slate-700">${item.dia || '--'}</span>
+        <span class="text-sm font-black text-slate-700">${item.dia}</span>
               </div>
               <div class="w-[50%] font-semibold text-slate-800 truncate text-left">
       ${item.nome}
@@ -147,23 +147,41 @@
       localStorage.setItem("gastos_pro", JSON.stringify(gastos));
     }
 
-    function incluirPorTexto(texto) {
-      const numeros = texto.match(/\d+[\.,]?\d*/g);
-      if (!numeros) return alert("Diga o valor claramente.");
+   function incluirPorTexto(texto) {
+  const numeros = texto.match(/\d+[\.,]?\d*/g);
+  if (!numeros) return alert("Diga o valor claramente.");
 
-      const valor = parseFloat(numeros[numeros.length - 1].replace(",", "."));
-      const nome = texto.replace(/\d+[\.,]?\d*/g,"")
-                        .replace(/reais?/gi,"").trim();
+  const valor = parseFloat(numeros[numeros.length - 1].replace(",", "."));
+  const nome = texto.replace(/\d+[\.,]?\d*/g, "")
+                    .replace(/reais?/gi, "").trim() || "Gasto sem nome";
 
-      gastos.unshift({
-        id: Date.now(),
-        nome: nome || "Gasto sem nome",
-        valor: valor,
-        dia: new Date().getDate(), // <--- Adiciona o dia atual (ex: 9)
-        mesRef: getMesReferencia(abaAtual)
-      });
-      renderizar();
-    }
+  const mesRefAtual = getMesReferencia(abaAtual);
+
+  // 1. Procura o índice (posição) do item existente
+  const indexExistente = gastos.findIndex(g => 
+    g.nome.toLowerCase() === nome.toLowerCase() && 
+    g.mesRef === mesRefAtual
+  );
+
+  let valorFinal = valor;
+  
+  if (indexExistente !== -1) {
+    // 2. Se achou, calcula o novo total e remove o item da posição antiga
+    valorFinal += gastos[indexExistente].valor;
+    gastos.splice(indexExistente, 1);
+  }
+
+  // 3. Adiciona (ou readiciona) sempre no topo (unshift)
+  gastos.unshift({
+    id: Date.now(), // ID novo para garantir que ele seja tratado como "fresco"
+    nome: nome,
+    valor: valorFinal,
+    dia: new Date().getDate(),
+    mesRef: mesRefAtual
+  });
+
+  renderizar();
+}
 
     function iniciarMicrofone() {
       const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
