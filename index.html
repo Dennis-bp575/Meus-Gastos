@@ -132,12 +132,18 @@
                </div>
             </div>
             <!-- BOTOES ALINHADOS À ESQUERDA -->
-            <div class="w-[15%] flex justify-end gap-1">
-              <button onclick="editarValor(${item.id})" class="p-2 hover:bg-slate-100 rounded-full transition" title="Editar"> ✏️
-               </button>
-              <button onclick="excluirItem(${item.id})" class="p-2 hover:bg-red-50 rounded-full transition" title="Excluir"> 🗑️
-               </button>
-            </div>
+            <div class="w-[15%] flex justify-end gap-1 items-center">
+    <button onclick="editarValor(${item.id})" 
+            class="p-1 hover:bg-slate-100 rounded-full transition flex items-center justify-center text-sm" 
+            title="Editar"> 
+            ✏️
+    </button>
+    <button onclick="excluirItem(${item.id})" 
+            class="p-1 hover:bg-red-50 rounded-full transition flex items-center justify-center text-sm" 
+            title="Excluir"> 
+            🗑️
+    </button>
+</div>
           </div>`;
       });
 
