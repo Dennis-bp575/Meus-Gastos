@@ -152,12 +152,14 @@
   if (!numeros) return alert("Diga o valor claramente.");
 
   const valor = parseFloat(numeros[numeros.length - 1].replace(",", "."));
-  const nome = texto.replace(/\d+[\.,]?\d*/g, "")
-                    .replace(/reais?/gi, "").trim() || "Gasto sem nome";
+  
+  // Ajuste aqui: adicionamos R$, BRL e símbolos de cifrão na limpeza
+  const nome = texto.replace(/\d+[\.,]?\d*/g, "") // Remove números
+                    .replace(/reais?|R\$|BRL|[$]/gi, "") // Remove moedas e símbolos
+                    .trim() || "Gasto sem nome";
 
   const mesRefAtual = getMesReferencia(abaAtual);
 
-  // 1. Procura o índice (posição) do item existente
   const indexExistente = gastos.findIndex(g => 
     g.nome.toLowerCase() === nome.toLowerCase() && 
     g.mesRef === mesRefAtual
@@ -166,14 +168,12 @@
   let valorFinal = valor;
   
   if (indexExistente !== -1) {
-    // 2. Se achou, calcula o novo total e remove o item da posição antiga
     valorFinal += gastos[indexExistente].valor;
     gastos.splice(indexExistente, 1);
   }
 
-  // 3. Adiciona (ou readiciona) sempre no topo (unshift)
   gastos.unshift({
-    id: Date.now(), // ID novo para garantir que ele seja tratado como "fresco"
+    id: Date.now(),
     nome: nome,
     valor: valorFinal,
     dia: new Date().getDate(),
