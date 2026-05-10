@@ -147,26 +147,39 @@
       localStorage.setItem("gastos_pro", JSON.stringify(gastos));
     }
 
-   function incluirPorTexto(texto) {
-  const numeros = texto.match(/\d+[\.,]?\d*/g);
-  if (!numeros) return alert("Diga o valor claramente.");
+  function incluirPorTexto(texto) {
+  // 1. Limpa termos de moeda e símbolos primeiro para não confundir
+  let textoLimpo = texto.replace(/reais?|R\$|BRL|[$]|centavos?/gi, "").trim();
 
-  const valor = parseFloat(numeros[numeros.length - 1].replace(",", "."));
-  
-  // Ajuste aqui: adicionamos R$, BRL e símbolos de cifrão na limpeza
-  const nome = texto.replace(/\d+[\.,]?\d*/g, "") // Remove números
-                    .replace(/reais?|R\$|BRL|[$]/gi, "") // Remove moedas e símbolos
-                    .trim() || "Gasto sem nome";
+  // 2. Procura por todos os números na frase
+  // Captura números como "10", "10,50", "10.50"
+  const numerosEncontrados = textoLimpo.match(/\d+([\.,]\d+)?/g);
+
+  if (!numerosEncontrados) return alert("Diga o valor claramente.");
+
+  let valor;
+  if (numerosEncontrados.length >= 2 && textoLimpo.includes(`${numerosEncontrados[0]} e ${numerosEncontrados[1]}`)) {
+    // Se a pessoa disse "10 e 50", somamos a parte inteira com a decimal
+    const parteInteira = parseFloat(numerosEncontrados[0].replace(",", "."));
+    const parteDecimal = parseFloat(numerosEncontrados[1].replace(",", ".")) / 100;
+    valor = parteInteira + parteDecimal;
+  } else {
+    // Caso contrário, pega o último número falado (padrão anterior)
+    valor = parseFloat(numerosEncontrados[numerosEncontrados.length - 1].replace(",", "."));
+  }
+
+  // 3. Limpa o nome removendo os números e o "e" que sobra entre eles
+  const nome = textoLimpo.replace(/\d+([\.,]\d+)?/g, "")
+                         .replace(/\b e \b/gi, "") // remove o " e " solto
+                         .trim() || "Gasto sem nome";
 
   const mesRefAtual = getMesReferencia(abaAtual);
-
   const indexExistente = gastos.findIndex(g => 
     g.nome.toLowerCase() === nome.toLowerCase() && 
     g.mesRef === mesRefAtual
   );
 
   let valorFinal = valor;
-  
   if (indexExistente !== -1) {
     valorFinal += gastos[indexExistente].valor;
     gastos.splice(indexExistente, 1);
