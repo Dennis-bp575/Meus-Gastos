@@ -18,6 +18,12 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://googleapis.com" rel="stylesheet">
 
+<script>
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("sw.js");
+}
+</script>
+  
   <style>
     body { font-family: 'Inter', sans-serif; }
     .aba-ativa {
