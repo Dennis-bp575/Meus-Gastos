@@ -169,10 +169,10 @@ if ("serviceWorker" in navigator) {
   let textoLimpo = texto.replace(/reais?|R\$|BRL|[$]|centavos?/gi, "").trim();
 
   // 2. Transforma a palavra " e " (isolada entre números) em um ponto decimal
-  textoLimpo = textoLimpo.replace(/\s+e\s+/gi, " ");
+  //textoLimpo = textoLimpo.replace(/\s+e\s+/gi, " ");
 
   // 3. Segurança extra: Se o usuário falar "20,50" (com vírgula), transforma em ponto
-  textoLimpo = textoLimpo.replace(/,/g, " ");
+  //textoLimpo = textoLimpo.replace(/,/g, " ");
 
   // 2. Procura por todos os números na frase
   // Captura números como "10", "10,50", "10.50"
