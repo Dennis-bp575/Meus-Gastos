@@ -105,63 +105,107 @@ if ("serviceWorker" in navigator) {
     }
 
     function renderizar() {
-      const container = document.getElementById('listaGastos');
-      const displayTotal = document.getElementById('displayTotal');
-      const nomeMesDisplay = document.getElementById('nomeMes');
-      const mesNome = getMesReferencia(abaAtual);
+		const container = document.getElementById('listaGastos');
+		const displayTotal = document.getElementById('displayTotal');
+		const nomeMesDisplay = document.getElementById('nomeMes');
+		const mesNome = getMesReferencia(abaAtual);
 
-      nomeMesDisplay.innerText = mesNome;
-      container.innerHTML = "";
-      let total = 0;
+		nomeMesDisplay.innerText = mesNome;
+		container.innerHTML = "";
+		let total = 0;
 
-      const gastosFiltrados = gastos.filter(g => g.mesRef === mesNome);
+		const gastosFiltrados = gastos.filter(g => g.mesRef === mesNome);
 
-      if (gastosFiltrados.length === 0) {
-        container.innerHTML =
-          `<div class="text-center text-slate-300 py-12 italic">
-            Sem gastos em ${mesNome.toLowerCase()}
-          </div>`;
-      }
+		if (gastosFiltrados.length === 0) {
+			container.innerHTML =
+			`<div class="text-center text-slate-300 py-12 italic">
+				Sem gastos em ${mesNome.toLowerCase()}
+			</div>`;
+		}
 
-      gastosFiltrados.forEach(item => {
-        total += item.valor;
-        container.innerHTML += `
-          <!-- O flex items-center na div pai é quem manda no alinhamento horizontal -->
-<div class="flex items-center justify-between py-1 px-3 border-b border-slate-100 h-10">
+		// Rodando cada gasto do mês selecionado
+		gastosFiltrados.forEach(item => {
+			total += item.valor;
 
-    <span class="text-right font-bold text-slate-700 min-w-[20px]">${item.dia}</span>
+			// CORREÇÃO 1: Criamos o container do item na memória para o clique funcionar individualmente
+			const divContainerGasto = document.createElement('div');
+			divContainerGasto.className = "flex flex-col border-b border-slate-100 py-1";
 
-    <p>&nbsp</p>
-    
-    <!-- NOME: Agora com leading-none para não ter sobra de espaço em cima/baixo -->
-    <div class="w-[50%] font-semibold text-slate-800 truncate text-left leading-none">
-        ${item.nome}
-    </div>
+			// CORREÇÃO 2: Montamos o HTML com a Linha Principal e a Sublista juntas dentro dele
+			divContainerGasto.innerHTML = `
+			<!-- LINHA PRINCIPAL -->
+			<div class="flex items-center justify-between px-3 h-10 w-full">
+				<span class="text-right font-bold text-slate-700 min-w-[20px]">${item.dia}</span>
+				<p>&nbsp</p>
 
-    <!-- VALOR: Certifique-se de que não tenha padding extra aqui -->
-    <div class="w-[35%] text-right font-bold text-slate-700 leading-none">
-        R$ ${item.valor.toFixed(2)}
-    </div>
-    
-    <p>&nbsp</p>
-    
-    <!-- BOTÕES: Ajustados para não empurrar a linha -->
-    <div class="w-[15%] flex justify-end gap-1 items-center">
-        <button onclick="editarValor(${item.id})" class="p-1 hover:bg-slate-100 rounded-full leading-none">
-            <span style="font-size: 14px;">✏️</span>
-        </button>
-        <button onclick="excluirItem(${item.id})" class="p-1 hover:bg-red-50 rounded-full leading-none">
-            <span style="font-size: 14px;">🗑️</span>
-        </button>
-    </div>
-</div>`;
-      });
+				<!-- NOME (45%) -->
+				<div class="w-[45%] font-semibold text-slate-800 truncate text-left leading-none">
+					${item.nome}
+				</div>
 
-      displayTotal.innerText =
-        `R$ ${total.toLocaleString('pt-BR',{minimumFractionDigits:2})}`;
+				<!-- VALOR (30%) -->
+				<div class="w-[30%] text-right font-bold text-slate-700 leading-none">
+					R$ ${item.valor.toFixed(2)}
+				</div>
+				<p>&nbsp</p>
 
-      localStorage.setItem("gastos_pro", JSON.stringify(gastos));
+				<!-- AÇÕES (25%) -->
+				<div class="w-[25%] flex justify-end gap-1 items-center">
+					<!-- A Seta só aparece se houver mais de 1 detalhe cadastrado -->
+						${item.detalhes && item.detalhes.length > 1 ? `
+						<button class="btn-seta p-1 hover:bg-slate-100 rounded-full leading-none text-[14px]">
+							▼
+						</button>
+					` : '<div class="w-[24px]"></div>'}
+
+					<button onclick="editarValor(${item.id})" class="p-1 hover:bg-slate-100 rounded-full leading-none">
+						<span style="font-size: 14px;">✏️</span>
+					</button>
+
+					<button onclick="excluirItem(${item.id})" class="p-1 hover:bg-red-50 rounded-full leading-none">
+						<span style="font-size: 14px;">🗑️</span>
+					</button>
+				</div>
+			</div>
+
+		<!-- SUBLISTA DE DETALHES -->
+		<div class="sublista-detalhes hidden pl-12 pb-2 pt-1 text-sm text-slate-500 flex flex-col gap-1">
+			${item.detalhes ? item.detalhes.map(d => `
+			<div class="flex justify-between w-[75%] border-l-2 border-slate-200 pl-2">
+				<span>↳ Lançamento (Dia ${d.dia})</span>
+				<span class="font-semibold">R$ ${d.valor.toFixed(2)}</span>
+			</div>
+			`).join('') : ''}
+		</div>
+		`;
+
+		// CORREÇÃO 3: Agora conseguimos achar a seta e a sublista deste item específico
+		const botaoSeta = divContainerGasto.querySelector('.btn-seta');
+		const sublista = divContainerGasto.querySelector('.sublista-detalhes');
+
+		if (botaoSeta) {
+		  botaoSeta.addEventListener('click', () => {
+			const estaEscondido = sublista.classList.contains('hidden');
+			if (estaEscondido) {
+			  sublista.classList.remove('hidden');
+			  botaoSeta.textContent = '▲';
+			} else {
+			  sublista.classList.add('hidden');
+			  botaoSeta.textContent = '▼';
+			}
+		});
     }
+
+    // Adiciona o bloco completo configurado dentro da sua lista real na tela
+    container.appendChild(divContainerGasto);
+  }); // <--- Fechamento correto do forEach
+
+  displayTotal.innerText =
+    `R$ ${total.toLocaleString('pt-BR',{minimumFractionDigits:2})}`;
+
+  localStorage.setItem("gastos_pro", JSON.stringify(gastos));
+}
+
 
   function incluirPorTexto(texto) {
   // 1. Limpa termos de moeda e símbolos primeiro para não confundir
@@ -209,12 +253,21 @@ if ("serviceWorker" in navigator) {
   }
 
   gastos.unshift({
-    id: Date.now(),
-    nome: nome,
-    valor: valorFinal,
-    dia: new Date().getDate(),
-    mesRef: mesRefAtual
-  });
+  id: Date.now(),
+  nome: nome,
+  valor: valorFinal, // Seu valor total inicial
+  dia: new Date().getDate(),
+  mesRef: mesRefAtual,
+  
+  // Aqui entra a sua nova sublista "detalhes"
+  detalhes: [
+    { 
+      idLancamento: Date.now(), 
+      valor: valorFinal,          // Usa a mesma variável do valor acima
+      dia: new Date().getDate()  // Usa o mesmo dia do gasto principal
+    }
+  ]
+});
 
   renderizar();
 }
