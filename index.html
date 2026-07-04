@@ -208,69 +208,77 @@ if ("serviceWorker" in navigator) {
 
 
   function incluirPorTexto(texto) {
-  // 1. Limpa termos de moeda e símbolos primeiro para não confundir
-  // 1. Limpa as palavras de moeda normais (sua linha original)
-  let textoLimpo = texto.replace(/reais?|R\$|BRL|[$]|centavos?/gi, "").trim();
+	  // 1. Limpa termos de moeda e símbolos primeiro para não confundir
+	  // 1. Limpa as palavras de moeda normais (sua linha original)
+	  let textoLimpo = texto.replace(/reais?|R\$|BRL|[$]|centavos?/gi, "").trim();
+	
+	  // 2. Transforma a palavra " e " (isolada entre números) em um ponto decimal
+	  textoLimpo = textoLimpo.replace(/\s+e\s+/gi, " ");
 
-  // 2. Transforma a palavra " e " (isolada entre números) em um ponto decimal
-  textoLimpo = textoLimpo.replace(/\s+e\s+/gi, " ");
+	  // 3. Segurança extra: Se o usuário falar "20,50" (com vírgula), transforma em ponto
+	  textoLimpo = textoLimpo.replace(/,/g, " ");
+	
+	  // 2. Procura por todos os números na frase
+	  // Captura números como "10", "10,50", "10.50"
+	  const numerosEncontrados = textoLimpo.match(/\d+([\.,]\d+)?/g);
 
-  // 3. Segurança extra: Se o usuário falar "20,50" (com vírgula), transforma em ponto
-  textoLimpo = textoLimpo.replace(/,/g, " ");
+	  if (!numerosEncontrados) return alert("Diga o valor claramente.");
+	
+	  let valor;
+	  if (numerosEncontrados.length >= 2 && textoLimpo.includes(`${numerosEncontrados[0]} e ${numerosEncontrados[1]}`)) {
+	    // Se a pessoa disse "10 e 50", somamos a parte inteira com a decimal
+	    const parteInteira = parseFloat(numerosEncontrados[0].replace(",", "."));
+	    const parteDecimal = parseFloat(numerosEncontrados[1].replace(",", ".")) / 100;
+	    valor = parteInteira + parteDecimal;
+  	} else {
+	    // Caso contrário, pega o último número falado (padrão anterior)
+	    valor = parseFloat(numerosEncontrados[numerosEncontrados.length - 1].replace(",", "."));
+	  }
 
-  // 2. Procura por todos os números na frase
-  // Captura números como "10", "10,50", "10.50"
-  const numerosEncontrados = textoLimpo.match(/\d+([\.,]\d+)?/g);
-
-  if (!numerosEncontrados) return alert("Diga o valor claramente.");
-
-  let valor;
-  if (numerosEncontrados.length >= 2 && textoLimpo.includes(`${numerosEncontrados[0]} e ${numerosEncontrados[1]}`)) {
-    // Se a pessoa disse "10 e 50", somamos a parte inteira com a decimal
-    const parteInteira = parseFloat(numerosEncontrados[0].replace(",", "."));
-    const parteDecimal = parseFloat(numerosEncontrados[1].replace(",", ".")) / 100;
-    valor = parteInteira + parteDecimal;
-  } else {
-    // Caso contrário, pega o último número falado (padrão anterior)
-    valor = parseFloat(numerosEncontrados[numerosEncontrados.length - 1].replace(",", "."));
-  }
-
-  // 3. Limpa o nome removendo os números e o "e" que sobra entre eles
-  const nome = textoLimpo.replace(/\d+([\.,]\d+)?/g, "")
-                         .replace(/\b e \b/gi, "") // remove o " e " solto
-                         .trim() || "Gasto sem nome";
-
-  const mesRefAtual = getMesReferencia(abaAtual);
-  const indexExistente = gastos.findIndex(g => 
-    g.nome.toLowerCase() === nome.toLowerCase() && 
-    g.mesRef === mesRefAtual
-  );
-
-  let valorFinal = valor;
-  if (indexExistente !== -1) {
-    valorFinal += gastos[indexExistente].valor;
-    gastos.splice(indexExistente, 1);
-  }
-
-  gastos.unshift({
-  id: Date.now(),
-  nome: nome,
-  valor: valorFinal, // Seu valor total inicial
-  dia: new Date().getDate(),
-  mesRef: mesRefAtual,
-  
-  // Aqui entra a sua nova sublista "detalhes"
-  detalhes: [
-    { 
-      idLancamento: Date.now(), 
-      valor: valorFinal,          // Usa a mesma variável do valor acima
-      dia: new Date().getDate()  // Usa o mesmo dia do gasto principal
-    }
-  ]
-});
-
-  renderizar();
-}
+	  // 3. Limpa o nome removendo os números e o "e" que sobra entre eles
+	  const nome = textoLimpo.replace(/\d+([\.,]\d+)?/g, "")
+	                         .replace(/\b e \b/gi, "") // remove o " e " solto
+	                         .trim() || "Gasto sem nome";
+	
+		const tudoCerto = confirm(`
+			Nome: ${nome}
+			Valor: ${valor}
+		
+			Está correto?
+		`);
+		if (tudoCerto) {
+			  const mesRefAtual = getMesReferencia(abaAtual);
+			  const indexExistente = gastos.findIndex(g => 
+			    g.nome.toLowerCase() === nome.toLowerCase() && 
+			    g.mesRef === mesRefAtual
+			  );
+		
+			  let valorFinal = valor;
+			  if (indexExistente !== -1) {
+			    valorFinal += gastos[indexExistente].valor;
+			    gastos.splice(indexExistente, 1);
+			  }
+		
+			  gastos.unshift({
+			  id: Date.now(),
+			  nome: nome,
+			  valor: valorFinal, // Seu valor total inicial
+			  dia: new Date().getDate(),
+			  mesRef: mesRefAtual,
+		  
+				  // Aqui entra a sua nova sublista "detalhes"
+				  detalhes: [
+				    { 
+				      idLancamento: Date.now(), 
+				      valor: valorFinal,          // Usa a mesma variável do valor acima
+				      dia: new Date().getDate()  // Usa o mesmo dia do gasto principal
+				    }
+				  ]
+				});
+		
+		  	renderizar();
+		}
+	}
 
     function iniciarMicrofone() {
       const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
