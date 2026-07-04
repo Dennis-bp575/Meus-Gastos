@@ -321,7 +321,7 @@ if ("serviceWorker" in navigator) {
 	  
 	function extrairNomeValor(frase) {
 	    // 1. Remove palavras comuns que atrapalham (reais, centavos, e)
-	    const limpa = frase.replace(/\b(reais|centavos|e)\b/gi, '').trim();
+	    const limpa = frase.replace(/\b(reais|centavos|e)\b|r\s?\$/gi, '').trim();
 	    
 	    // 2. Extrai todos os números da frase
 	    const numeros = limpa.match(/\d+/g);
