@@ -210,37 +210,9 @@ if ("serviceWorker" in navigator) {
   function incluirPorTexto(texto) {
 
 	  const resultado = extrairNomeValor(texto);
-	  // 1. Limpa termos de moeda e símbolos primeiro para não confundir
-	  // 1. Limpa as palavras de moeda normais (sua linha original)
-	  //let textoLimpo = texto.replace(/reais?|R\$|BRL|[$]|centavos?/gi, "").trim();
-	
-	  // 2. Transforma a palavra " e " (isolada entre números) em um ponto decimal
-	  //textoLimpo = textoLimpo.replace(/\s+e\s+/gi, " ");
-
-	  // 3. Segurança extra: Se o usuário falar "20,50" (com vírgula), transforma em ponto
-	  //textoLimpo = textoLimpo.replace(/,/g, " ");
-	
-	  // 2. Procura por todos os números na frase
-	  // Captura números como "10", "10,50", "10.50"
-	  //const numerosEncontrados = textoLimpo.match(/\d+([\.,]\d+)?/g);
-
+	  
 	  if (!resultado.valor) return alert("Diga o valor claramente.");
 	
-	  //let valor;
-	  //if (numerosEncontrados.length >= 2 && textoLimpo.includes(`${numerosEncontrados[0]} e ${numerosEncontrados[1]}`)) {
-	    // Se a pessoa disse "10 e 50", somamos a parte inteira com a decimal
-	    //const parteInteira = parseFloat(numerosEncontrados[0].replace(",", "."));
-	    //const parteDecimal = parseFloat(numerosEncontrados[1].replace(",", ".")) / 100;
-	    //valor = parteInteira + parteDecimal;
-  	//} else {
-	    // Caso contrário, pega o último número falado (padrão anterior)
-	    //valor = parseFloat(numerosEncontrados[numerosEncontrados.length - 1].replace(",", "."));
-	  //}
-
-	  // 3. Limpa o nome removendo os números e o "e" que sobra entre eles
-	  //const nome = textoLimpo.replace(/\d+([\.,]\d+)?/g, "")
-	  //                       .replace(/\b e \b/gi, "") // remove o " e " solto
-	   //                      .trim() || "Gasto sem nome";
 		const nome = resultado.nome
 	  	let valor;
 	  	valor = resultado.valor
@@ -320,28 +292,24 @@ if ("serviceWorker" in navigator) {
     }
 	  
 	function extrairNomeValor(frase) {
-	    // 1. Remove palavras comuns que atrapalham (reais, centavos, e)
+	    // 1. Limpa a frase (remove palavras e o "R$")
 	    const limpa = frase.replace(/\b(reais|centavos|e)\b|r\s?\$/gi, '').trim();
-	    
-	    // 2. Extrai todos os números da frase
+	
+	    // 2. Extrai os números DA FRASE LIMPA
 	    const numeros = limpa.match(/\d+/g);
 	    
 	    let reais = 0;
 	    let centavos = 0;
-	    
 	    if (numeros) {
 	        reais = parseInt(numeros[0], 10);
-	        // Se houver segundo número, usa como centavos; senão, centavos = 0
 	        centavos = numeros.length > 1 ? parseInt(numeros[1], 10) : 0;
 	    }
-    
-	    // 3. O nome é tudo que vem antes do primeiro número
-	    const matchNome = limpa.match(/^([^\d]*)/);
+	
+	    // 3. Extrai o nome DA FRASE LIMPA (e não da original!)
+	    const matchNome = limpa.match(/^([^\d]*)/); // ✅ Agora usa "limpa"
 	    const nome = matchNome ? matchNome[0].trim() : '';
-	    
-	    // 4. Monta o valor com duas casas decimais
+	
 	    const valor = reais + centavos / 100;
-	    
 	    return { nome, valor };
 	}
 
