@@ -254,28 +254,47 @@ if ("serviceWorker" in navigator) {
 			  );
 		
 			  let valorFinal = valor;
-			  if (indexExistente !== -1) {
-			    valorFinal += gastos[indexExistente].valor;
-			    gastos.splice(indexExistente, 1);
-			  }
-		
-			  gastos.unshift({
-			  id: Date.now(),
-			  nome: nome,
-			  valor: valorFinal, // Seu valor total inicial
-			  dia: new Date().getDate(),
-			  mesRef: mesRefAtual,
-		  
-				  // Aqui entra a sua nova sublista "detalhes"
-				  detalhes: [
-				    { 
-				      idLancamento: Date.now(), 
-				      valor: valorFinal,          // Usa a mesma variável do valor acima
-				      dia: new Date().getDate()  // Usa o mesmo dia do gasto principal
-				    }
-				  ]
+			  
+			if (indexExistente !== -1) {
+			
+				gastos[indexExistente].valor += valor;
+			
+				if (!gastos[indexExistente].detalhes) {
+				
+				    gastos[indexExistente].detalhes = [{
+				        idLancamento: gastos[indexExistente].id,
+				        valor: gastos[indexExistente].valor,
+				        dia: gastos[indexExistente].dia
+				    }];
+				
+				}
+
+				gastos[indexExistente].detalhes.push({
+					idLancamento: Date.now(),
+					valor: valor,
+					dia: new Date().getDate()
 				});
+			
+			} else {
+
 		
+				  gastos.unshift({
+					  id: Date.now(),
+					  nome: nome,
+					  valor: valor, // Seu valor total inicial
+					  dia: new Date().getDate(),
+					  mesRef: mesRefAtual,
+			  
+					  // Aqui entra a sua nova sublista "detalhes"
+					  detalhes: [
+					    { 
+					      idLancamento: Date.now(), 
+					      valor: valor,          // Usa a mesma variável do valor acima
+					      dia: new Date().getDate()  // Usa o mesmo dia do gasto principal
+					    }
+					  ]
+					});
+				}
 		  	renderizar();
 		}
 	}
