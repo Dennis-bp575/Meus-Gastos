@@ -58,7 +58,8 @@ if ("serviceWorker" in navigator) {
     <div class="p-6 flex-1">
 
       <!-- TOTAL -->
-      <div class="bg-gradient-to-br from-blue-600 to-indigo-700 text-white rounded-3xl p-8 mb-8 shadow-xl">
+      <div class="bg-gradient-to-r from-blue-500 via-blue-600 to-indigo-800
+            text-white rounded-none p-8 mb-8 shadow-xl">
 		  <div class="text-sm opacity-75 uppercase tracking-wider mb-2">
 		    Total Acumulado
 		  </div>
@@ -75,12 +76,20 @@ if ("serviceWorker" in navigator) {
 	  </div>
       <!-- BOTÃO VOZ -->
       <button onclick="iniciarMicrofone()"
-	  class="w-full bg-gradient-to-r from-blue-600 to-indigo-600
-	         hover:from-blue-700 hover:to-indigo-700
-	         text-white rounded-lg botao-grande mb-8
+	  class="w-full
+	         bg-gradient-to-r
+	         from-sky-500
+	         via-blue-600
+	         to-violet-700
+	         hover:brightness-110
+	         text-white
+	         rounded-none
+	         botao-grande
+	         mb-8
 	         flex items-center justify-center gap-3
-	         shadow-lg shadow-blue-500/25
-	         active:scale-95 transition-all">
+	         shadow-lg shadow-blue-500/30
+	         active:scale-95
+	         transition-all">
         <span class="text-2xl">🎤</span>
         <span class="text-xl font-semibold">LANÇAR GASTO POR VOZ</span>
       </button>
