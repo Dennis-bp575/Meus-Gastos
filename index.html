@@ -170,8 +170,16 @@ if ("serviceWorker" in navigator) {
 				<div class="w-[20%] flex justify-end gap-1 items-center">
 					<!-- A Seta só aparece se houver mais de 1 detalhe cadastrado -->
 						${item.detalhes && item.detalhes.length > 1 ? `
-						<button class="btn-seta p-1 hover:bg-slate-100 rounded-full leading-none text-[14px]">
-							▼
+						<button class="btn-seta
+						               w-6 h-6
+						               flex items-center justify-center
+						               rounded-full
+						               bg-blue-600
+						               text-white
+						               text-[11px]
+						               shadow-sm
+						               transition-all">
+						  ▼
 						</button>
 					` : '<div class="w-[24px]"></div>'}
 					
