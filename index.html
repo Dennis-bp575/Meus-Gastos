@@ -155,8 +155,8 @@ if ("serviceWorker" in navigator) {
 
 				<!-- NOME (45%) -->
 				
-				<div class="w-[45%] text-[18px] font-semibold text-slate-800 truncate text-left leading-none">
-					${item.nome}
+				<div class="w-[45%] text-[20px] font-semibold text-slate-800 truncate text-left leading-none">
+					${item.nome.charAt(0).toUpperCase() + item.nome.slice(1).toLowerCase()}
 				</div>
 
 				<!-- VALOR (30%) -->
