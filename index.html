@@ -149,13 +149,13 @@ if ("serviceWorker" in navigator) {
 			// CORREÇÃO 2: Montamos o HTML com a Linha Principal e a Sublista juntas dentro dele
 			divContainerGasto.innerHTML = `
 			<!-- LINHA PRINCIPAL -->
-			<div class="flex items-center justify-between px-3 h-9 w-full">
+			<div class="flex items-center justify-between px-3 h-8 w-full">
 				<span class="text-right font-bold text-slate-700 min-w-[20px]">${item.dia}</span>
 				<p>&nbsp</p>
 
-				<!-- NOME (45%) -->
+				<!-- NOME (50%) -->
 				
-				<div class="w-[45%] text-[20px] font-semibold text-slate-800 truncate text-left leading-none">
+				<div class="w-[50%] text-[20px] font-semibold text-slate-800 truncate text-left leading-none">
 					${item.nome.charAt(0).toUpperCase() + item.nome.slice(1).toLowerCase()}
 				</div>
 
@@ -166,8 +166,8 @@ if ("serviceWorker" in navigator) {
 				</div>
 				<p>&nbsp</p>
 
-				<!-- AÇÕES (25%) -->
-				<div class="w-[25%] flex justify-end gap-1 items-center">
+				<!-- AÇÕES (20%) -->
+				<div class="w-[20%] flex justify-end gap-1 items-center">
 					<!-- A Seta só aparece se houver mais de 1 detalhe cadastrado -->
 						${item.detalhes && item.detalhes.length > 1 ? `
 						<button class="btn-seta p-1 hover:bg-slate-100 rounded-full leading-none text-[14px]">
