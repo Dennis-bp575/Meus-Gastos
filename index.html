@@ -59,24 +59,30 @@ if ("serviceWorker" in navigator) {
 
       <!-- TOTAL -->
       <div class="bg-gradient-to-br from-blue-600 to-indigo-700 text-white rounded-3xl p-8 mb-8 shadow-xl">
-        <div class="text-xs opacity-70 uppercase tracking-widest mb-1">
-          Total Acumulado
-        </div>
-        <div id="displayTotal" class="text-4xl font-extrabold tracking-tight">
-          R$ 0,00
-        </div>
-        <div id="nomeMes" class="text-sm mt-2 opacity-80 font-medium">
-          MAIO 2026
-        </div>
-      </div>
-
+		  <div class="text-sm opacity-75 uppercase tracking-wider mb-2">
+		    Total Acumulado
+		  </div>
+		
+		  <div id="displayTotal"
+		       class="text-5xl font-extrabold leading-none">
+		    R$ 0,00
+		  </div>
+		
+		  <div id="nomeMes"
+		       class="text-base mt-3 opacity-90 font-medium">
+		    MAIO 2026
+		  </div>
+	  </div>
       <!-- BOTÃO VOZ -->
       <button onclick="iniciarMicrofone()"
-        class="w-full bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white rounded-2xl botao-grande mb-8
-               flex items-center justify-center gap-3 shadow-lg shadow-blue-200
-               active:scale-95 transition-all">
+	  class="w-full bg-gradient-to-r from-blue-600 to-indigo-600
+	         hover:from-blue-700 hover:to-indigo-700
+	         text-white rounded-lg botao-grande mb-8
+	         flex items-center justify-center gap-3
+	         shadow-lg shadow-blue-500/25
+	         active:scale-95 transition-all">
         <span class="text-2xl">🎤</span>
-        <span class="text-lg font-bold tracking-wide">LANÇAR GASTO POR VOZ</span>
+        <span class="text-xl font-semibold">LANÇAR GASTO POR VOZ</span>
       </button>
 
       <!-- LISTA -->
