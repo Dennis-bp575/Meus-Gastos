@@ -37,6 +37,124 @@ if ("serviceWorker" in navigator) {
 
 <body class="bg-slate-100 flex justify-center min-h-screen">
 
+		<!-- Cole este bloco logo após a abertura da tag <body> do seu index.html -->
+		<div id="vibet-splash">
+		    <div class="splash-content">
+		        <div class="splash-subtitle">Uma criação</div>
+		        <div class="splash-logo">vibe<span>Ti</span></div>
+		        <div class="splash-app-name">Gastos Pro</div>
+		        <div class="splash-loader">
+		            <div class="splash-progress"></div>
+		        </div>
+		    </div>
+		</div>
+		
+		<style>
+		/* Estilos isolados para não quebrar o layout do seu app */
+		#vibet-splash {
+		    position: fixed;
+		    top: 0;
+		    left: 0;
+		    width: 100vw;
+		    height: 100vh;
+		    background-color: #0a0e17;
+		    display: flex;
+		    justify-content: center;
+		    align-items: center;
+		    z-index: 99999; /* Garante que fica por cima de tudo */
+		    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+		    transition: opacity 0.4s ease, transform 0.4s ease;
+		}
+		
+		.splash-content {
+		    text-align: center;
+		    width: 100%;
+		    max-width: 320px;
+		    padding: 20px;
+		}
+		
+		.splash-subtitle {
+		    color: #64748b;
+		    font-size: 0.75rem;
+		    text-transform: uppercase;
+		    letter-spacing: 5px;
+		    margin-bottom: 4px;
+		    opacity: 0;
+		    animation: splFadeIn 0.8s ease forwards 0.2s;
+		}
+		
+		.splash-logo {
+		    font-size: 2.2rem;
+		    color: #ffffff;
+		    font-weight: 300;
+		    letter-spacing: -0.5px;
+		    opacity: 0;
+		    transform: translateY(10px);
+		    animation: splFadeUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards 0.5s;
+		}
+		
+		.splash-logo span {
+		    color: #10b981; /* Verde esmeralda para finanças */
+		    font-weight: 700;
+		}
+		
+		.splash-app-name {
+		    color: #94a3b8;
+		    font-size: 1rem;
+		    margin-top: 12px;
+		    font-weight: 500;
+		    letter-spacing: 1px;
+		    opacity: 0;
+		    animation: splFadeIn 0.8s ease forwards 1s;
+		}
+		
+		.splash-loader {
+		    width: 140px;
+		    height: 2px;
+		    background-color: #1e293b;
+		    margin: 24px auto 0 auto;
+		    border-radius: 4px;
+		    overflow: hidden;
+		}
+		
+		.splash-progress {
+		    width: 0%;
+		    height: 100%;
+		    background: linear-gradient(90deg, #10b981, #3b82f6);
+		    animation: splLoad 1.5s cubic-bezier(0.4, 0, 0.2, 1) forwards 0.8s;
+		}
+		
+		/* Classes de saída que serão ativadas por JavaScript */
+		#vibet-splash.fade-out {
+		    opacity: 0;
+		    pointer-events: none;
+		    transform: scale(1.02); /* Leve efeito de zoom ao sair */
+		}
+		
+		/* Animações */
+		@keyframes splFadeIn { to { opacity: 1; } }
+		@keyframes splFadeUp { to { opacity: 1; transform: translateY(0); } }
+		@keyframes splLoad { to { width: 100%; } }
+		</style>
+		
+		<script>
+		// Controle de inicialização do PWA
+		document.addEventListener("DOMContentLoaded", () => {
+		    const splash = document.getElementById("vibet-splash");
+		    
+		    // Simula o tempo de carregamento dos módulos do Gastos Pro (2.5 segundos)
+		    // No seu app real, você pode disparar isso quando seus dados/banco local carregarem
+		    setTimeout(() => {
+		        splash.classList.add("fade-out");
+		        
+		        // Remove totalmente do DOM após a transição para economizar memória
+		        setTimeout(() => splash.remove(), 400); 
+		    }, 2500);
+		});
+		</script>
+
+	
+
   <div class="w-full max-w-md bg-white shadow-2xl flex flex-col rounded-none sm:rounded-3xl overflow-hidden">
 
     <!-- ABAS -->
