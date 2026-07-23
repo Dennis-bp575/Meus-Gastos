@@ -3,5 +3,5 @@ self.addEventListener('install', (e) => {
 });
 
 self.addEventListener('fetch', (e) => {
-  // básico — depois dá pra evoluir
+  
 });
